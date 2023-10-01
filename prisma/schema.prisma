@@ -13,7 +13,7 @@ datasource db {
 model Person {
   id                             Int    @id @default(autoincrement())
   Short_name                     String @db.VarChar(255)
-  VIAF_or_CERL_identifier        String @db.VarChar(255) // Actually enum or dynamic link
+  VIAF_or_CERL_identifier        String @db.VarChar(255) // Actually enum or dynamic link: e.g. https://viaf.org/viaf/46774681/
   First_name                     String @db.VarChar(255)
   Maiden_name                    String @db.VarChar(255)
   Married_name                   String @db.VarChar(255)
@@ -44,4 +44,98 @@ model Person {
   // Related_to                 Persons +
   // Publications               Works +
   Notes                          String @db.Text
+
+  @@map("Persons")
+}
+
+model Collective {
+  id                Int    @id @default(autoincrement())
+  Type              String @db.VarChar(255) // Enum
+  Name              String @db.VarChar(255)
+  // Place Places +
+  Dates_of_activity Int
+  // Has_members	 Persons +
+  Notes             String @db.Text
+
+  @@map("Collectives")
+}
+
+model Work {
+  id          Int    @id @default(autoincrement())
+  VIAF_Work   String @db.VarChar(32) // Dynamic link
+  Language    String @db.VarChar(255) // Enum
+  // Related_Persons	 Persons +
+  Person_role String @db.VarChar(255) // Enum
+  // Has_edition	 Editions +
+  Notes       String @db.Text
+
+  @@map("Works")
+}
+
+model Edition {
+  id               Int    @id @default(autoincrement())
+  Publication_year Int
+  // Place_of_publication	 Places
+  Language         String @db.VarChar(255) // Enum
+  CERL_Publisher   String @db.VarChar(255) // Enum -- Dynamic link
+  // Related_Persons	 Persons +
+  Person_role      String @db.VarChar(255) // Enum
+  Genre            String @db.VarChar(255) // Enum
+
+  URL   String @db.VarChar(255)
+  Notes String @db.Text
+
+  @@map("Editions")
+}
+
+model Reception {
+  id                    Int    @id @default(autoincrement())
+  // Person_received	 Persons
+  // Person_receiving	 Persons // = reception author
+  Person_role           String @db.VarChar(255) // Enum
+  // Source	 Reception sources
+  Title                 String @db.Text
+  // Part_of_work	 Works
+  Reference             String @db.Text
+  // Place_of_reception	 Places
+  Date_of_reception     Int
+  Quotation_reception   String @db.Text
+  Document_type         String @db.VarChar(255) // Enum
+  URL                   String @db.VarChar(200)
+  Reception_type        String @db.VarChar(255) // Enum
+  Language_of_reception String @db.VarChar(255) // Enum
+  Reception_genre       String @db.VarChar(255) // Enum
+  VIAF_Work             String @db.VarChar(255) // Enum
+  // Image	
+  Notes                 String @db.Text
+
+  @@map("Receptions")
+}
+
+model Reception_source {
+  id          Int    @id @default(autoincrement())
+  // Work	 Works
+  // Part_of	 Works
+  title_work  String @db.VarChar(200)
+  // Related_Persons	 Persons +
+  Person_role String @db.VarChar(255) // Enum
+  shelfmark   String @db.VarChar(200)
+  reference   String @db.Text
+  date        Int
+  URL         String @db.VarChar(200)
+  Notes       String @db.Text
+
+  @@map("Reception_sources")
+}
+
+model Place {
+  id Int @id @default(autoincrement())
+
+  Name_of_city   String @db.VarChar(200)
+  CERL_ID        String @db.VarChar(255) // Enum
+  Modern_country String @db.VarChar(255) // Enum
+  Latitude       Int
+  Longitude      Int
+
+  @@map("Places")
 }
