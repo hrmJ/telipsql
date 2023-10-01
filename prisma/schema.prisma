@@ -9,3 +9,39 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Person {
+  id                             Int    @id @default(autoincrement())
+  Short_name                     String @db.VarChar(255)
+  VIAF_or_CERL_identifier        String @db.VarChar(255) // Actually enum or dynamic link
+  First_name                     String @db.VarChar(255)
+  Maiden_name                    String @db.VarChar(255)
+  Married_name                   String @db.VarChar(255)
+  Alternative_name               String @db.VarChar(255)
+  Date_in_use_of_name            Int
+  Date_of_birth                  Int
+  Date_of_death                  Int
+  Flourishing                    Int
+  Sex                            String @db.VarChar(255) // Enum
+  Alternative_name_gender        String @db.VarChar(255)
+  // Place_of_birth                   Places 
+  // Place_of_death                   Places
+  // Is_author_of                     Works +
+  Professional_ecclesiatic_title String @db.VarChar(255)
+  Role                           String @db.VarChar(255) // Enum
+  Date_of_role                   Int
+  // Is_member_of                     Collectives +
+  Place_of_residence             String @db.VarChar(255) // Enum
+  Date_of_residence              Int
+  Education                      String @db.VarChar(200)
+  Marital_status                 String @db.VarChar(255) // Enum
+  Date_of_marital_status         Int
+  // Spouse                          Persons +
+  // Children                          Persons +
+  Profession                     String @db.VarChar(255) // Enum
+  Religion                       String @db.VarChar(255) // Enum
+  Bibliography                   String @db.Text
+  // Related_to                 Persons +
+  // Publications               Works +
+  Notes                          String @db.Text
+}

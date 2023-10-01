@@ -1,0 +1,34 @@
+id                            |INT (not_null)
+id                            |INT (not_null)
+Short_name                    |VARCHAR (255)
+VIAF_or_CERL_identifier       |ENUM (not_null) DYNAMIC LINK
+First_name                    |VARCHAR (255)
+Maiden_name                   |VARCHAR (255)
+Married_name                  |VARCHAR (255) +
+Alternative_name              |VARCHAR (255) +
+Date_in_use_of_name           |INT
+Date_of_birth                 |INT
+Date_of_death                 |INT
+Flourishing                   |INT
+Sex                           |ENUM (not_null)
+Alternative_name_gender       |ENUM (not_null)
+Place_of_birth                | Places 
+Place_of_death                | Places
+Is_author_of                  | Works +
+Professional_ecclesiatic_title|VARCHAR (255)
+Role                          |ENUM +
+Date_of_role                  |INT
+Is_member_of                  | Collectives +
+Place_of_residence            |ENUM +
+Date_of_residence             |INT
+Education                     |VARCHAR (200)
+Marital_status                |ENUM +
+Date_of_marital_status        |INT +
+Spouse                        | Persons +
+Children                      | Persons +
+Profession                    |ENUM
+Religion                      |ENUM
+Bibliography                  |LONGTEXT
+Related_to                    | Persons +
+Publications                  |Works +
+Notes                         |LONGTEXT
