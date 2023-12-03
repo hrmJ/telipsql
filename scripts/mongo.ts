@@ -2,7 +2,7 @@ import { Db, ObjectId } from "mongodb";
 
 export async function publicationFetched(id: string, db: Db) {
   const authors = db.collection("authors");
-  const result = authors.aggregate([
+  const cursor = authors.aggregate([
     { $match: { "publications._id": new ObjectId(id) } },
     { $unwind: "$publications" },
     {
@@ -12,13 +12,11 @@ export async function publicationFetched(id: string, db: Db) {
       },
     },
   ]);
-  for await (const doc of result) {
-    console.log(doc);
+  const result = await cursor.toArray();
+  const [publication] = result;
+  if (!publication) {
+    console.log(`NO PUBLICATION with id ${id} FOUND`);
+    return null;
   }
-
-  //const publication = await publications.findOne({ id: new ObjectId(id) });
-  //if (!publication) {
-  //  console.log(`NO PUBLICATION with id ${id} FOUND`);
-  //}
-  return null;
+  return publication;
 }
