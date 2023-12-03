@@ -7,7 +7,9 @@ const db = client.db("teli");
 
 const authors = db.collection("authors");
 const allAuthors = await authors.find({}).toArray();
-
-allAuthors.forEach(authorWorksToReceptions);
+const authorProcessed = authorWorksToReceptions(db);
+for (const author of allAuthors) {
+  await authorProcessed(author);
+}
 
 await client.close();

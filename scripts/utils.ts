@@ -1,10 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { publicationFetched } from "./mongo";
 
-export function authorConverted() {
-  //
-}
-
 type ReceptionDict = {
   translations: any[];
   reviews: any[];
@@ -31,32 +27,35 @@ function idAsString(id: string | unknown) {
   return id;
 }
 
-async function saveReception(
-  type: string,
-  receptionIdRaw: string | unknown,
-  db: any,
-) {
-  const receptionId = idAsString(receptionIdRaw);
-  const publication = await publicationFetched(receptionId, db);
+function processReceptionsForPublication(publication: any, db: any) {
+  return async function (type: string, receptionIdRaw: string | unknown) {
+    const receptionId = idAsString(receptionIdRaw);
+    const receptionEntryInTeli = await publicationFetched(receptionId, db);
+    console.log(receptionEntryInTeli, "⛳");
+    // await saveReceptionEntries(publication)
+  };
 }
 
-async function processReceptions(receptions: ReceptionDict, db: any) {
+async function processReceptions(publication: any, db: any) {
+  const receptions = (publication?.receptions as ReceptionDict) ?? {};
   const { adaptations, articles, other, reviews, translations } = receptions;
+  const processed = processReceptionsForPublication(publication, db);
   for (const entry of Object.entries(receptions)) {
     const [type, receptionIds] = entry;
     // RECURSIVELY PROCESS ALL THE RECEPTIONS HERE!!
     for (const id of receptionIds) {
-      await saveReception(type, id, db);
+      await processed(type, id);
     }
   }
-  const receptionList = Object.entries(receptions).map(asReceptionWithType);
+  // const receptionList = Object.entries(receptions).map(asReceptionWithType);
   // console.log(receptionList);
 }
 
-export async function authorWorksToReceptions(author: any, db: any) {
-  const publications = author.publications;
-  for (const publication of publications) {
-    const receptions = publication?.receptions;
-    await processReceptions(receptions, db);
-  }
+export function authorWorksToReceptions(db: any) {
+  return async function (author: any) {
+    const publications = author.publications;
+    for (const publication of publications) {
+      await processReceptions(publication, db);
+    }
+  };
 }
