@@ -31,7 +31,7 @@ function processReceptionsForPublication(publication: any, db: any) {
   return async function (type: string, receptionIdRaw: string | unknown) {
     const receptionId = idAsString(receptionIdRaw);
     const receptionEntryInTeli = await publicationFetched(receptionId, db);
-    console.log(receptionEntryInTeli, "⛳");
+    console.log({ receptionEntryInTeli, receptionId, type });
     // await saveReceptionEntries(publication)
   };
 }
