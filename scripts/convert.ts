@@ -9,7 +9,10 @@ const authors = db.collection("authors");
 const allAuthors = await authors.find({}).toArray();
 const authorProcessed = authorWorksToReceptions(db);
 for (const author of allAuthors) {
-  await authorProcessed(author);
+  await authorProcessed(author).catch((e) => {
+    console.error(`Error processing ${author.name}`);
+    console.error(e);
+  });
 }
 
 await client.close();

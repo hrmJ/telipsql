@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { publicationFetched } from "./mongo";
+import { asReceptionSource, saveReceptionEntries } from "./psql";
 
 type ReceptionDict = {
   translations: any[];
@@ -31,8 +32,10 @@ function processReceptionsForPublication(publication: any, db: any) {
   return async function (type: string, receptionIdRaw: string | unknown) {
     const receptionId = idAsString(receptionIdRaw);
     const receptionEntryInTeli = await publicationFetched(receptionId, db);
-    console.log({ receptionEntryInTeli, receptionId, type });
-    // await saveReceptionEntries(publication)
+    // console.log({ receptionEntryInTeli, receptionId, type });
+    await saveReceptionEntries(receptionEntryInTeli, publication, type).catch(
+      () => console.log(`ERROR saving ${JSON.stringify(publication)}`),
+    );
   };
 }
 
@@ -55,6 +58,8 @@ export function authorWorksToReceptions(db: any) {
   return async function (author: any) {
     const publications = author.publications;
     for (const publication of publications) {
+      const publicationInPsql = await asReceptionSource(publication);
+      console.log({ publicationInPsql });
       await processReceptions(publication, db);
     }
   };
